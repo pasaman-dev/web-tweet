@@ -9,13 +9,28 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="card bg-base-100 shadow-xl border-b-4 border-gray-100 mb-6">
                 <div class="card-body">
-                    <form action="" class="mb-4">
+                    @if (session()->has('success'))
+                        <small>Status berhasil di update</small>
+                    @elseif(session()->has('error'))
+                        <small>Status gagal di update</small>
+                    @endif
+                    <form action="{{ route('dashboard.create') }}" method="POST" class="mb-4" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-4">
                             <input type="file" name="image" id="image" class="file-input-bordered">
+                            <div class="mt-4">
+                                @error('image')
+                                    <small>Image wajib diisi</small>
+                                @enderror
+                            </div>
                         </div>
                         <div class="mb-6">
-                            <textarea name="content" id="content" class="textarea textarea-bordered w-full"></textarea>
+                            <textarea name="content" id="content" placeholder="Apa yang anda pikirkan?" class="textarea textarea-bordered w-full">{{ old('content') }}</textarea>
+                            <div class="mt-4">
+                                @error('content')
+                                    <small>Konten wajib diisi</small>
+                                @enderror
+                            </div>
                         </div>
                         <input type="submit" value="Tweet" class="btn btn-primary">
                     </form>

@@ -17,4 +17,25 @@ class TweetController extends Controller
     public function create(Request $request) {
         return view('tweet.create');
     }
+
+    public function submit(Request $request) {
+        // validate
+        $this->validate($request, [
+            'image' => 'required',
+            'content' => 'required',
+        ]);
+
+        // proses gambar dan simpan
+        $image = $request->file('image');
+        $image->storeAs("public/tweets", $image->hashName());
+
+        // simpan data ke tables
+        Tweet::create([
+            'image_name' => $image->hashName(),
+            'content' => $request->content,
+        ]);
+
+        // Redirect ke halaman dashboard kembali
+        return redirect()->route('dashboard')->with(["success" => "success"]);
+    }
 }

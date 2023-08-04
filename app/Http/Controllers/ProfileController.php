@@ -57,4 +57,28 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function stores(Request $request): RedirectResponse
+    {
+        //validate form
+        $this->validate($request, [
+            'image'     => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'title'     => 'required|min:5',
+            'content'   => 'required|min:10'
+        ]);
+
+        //upload image
+        $image = $request->file('image');
+        $image->storeAs('public/posts', $image->hashName());
+
+        //create post
+        Post::create([
+            'image'     => $image->hashName(),
+            'title'     => $request->title,
+            'content'   => $request->content
+        ]);
+
+        //redirect to index
+        return redirect()->route('posts.index')->with(['success' => 'Data Berhasil Disimpan!']);
+    }
 }
